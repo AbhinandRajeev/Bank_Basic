@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 ">
+
+  <div class="w-full max-w-md bg-white/30 backdrop-blur-md border border-white/20 shadow-lg rounded-2xl p-8 hover:scale-105 transition-transform duration-300">
+    <h1 class="text-3xl text-center mb-6 text-blue-600 font-semibold">Login Here</h1>
+
+    <form class="space-y-5">
+      <div>
+        <label for="accNumber" class="block mb-2 text-sm font-medium text-gray-900">Account Number</label>
+        <input type="text" id="accNumber"
+          class="w-full p-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          placeholder="Enter account number" required>
+      </div>
+
+      <div>
+        <label for="userPassword" class="block mb-2 text-sm font-medium text-gray-900">Password</label>
+        <input type="password" id="userPassword"
+          class="w-full p-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          placeholder="Enter password" required>
+      </div>
+
+      <div class="flex items-center">
+        <input id="remember" type="checkbox" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+        <label for="remember" class="ml-2 text-sm text-gray-700">Remember me</label>
+      </div>
+
+      <div>
+        <button type="submit" onclick="login()"
+          class="w-full bg-yellow-400 text-white py-3 rounded-lg font-medium hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 transition">
+          Submit
+        </button>
+      </div>
+    </form>
+
+    <p class="text-sm text-center text-gray-700 mt-5">
+      Don’t have an account?
+      <a href="register.html" class="text-blue-600 hover:underline font-medium">Register</a>
+    </p>
+  </div>
+
+  <script>
+    function login() {
+      event.preventDefault();
+      let acno = accNumber.value
+      let password = userPassword.value
+
+      if (acno == "" || password == "") {
+        alert("Please fill the form")
+      }
+      else {
+        let registerData = JSON.parse(localStorage.getItem('userData'))
+        console.log(registerData)
+
+        if (registerData.accNo == acno) {
+
+          if (registerData.password == password) {
+            alert("Log in successfull")
+            window.location.href = 'transaction.html'
+          }
+          else {
+            alert("Incorrect password")
+          }
+
+        }
+
+        else {
+          alert("Invalid Account Number")
+        }
+      }
+    }
+  </script>
+
+</body>
+
+</html>
