@@ -75,6 +75,11 @@
             let userData = JSON.parse(localStorage.getItem('userData'));
             if (userData && userData.name) {
                 document.getElementById('displayName').innerText = `Welcome ${userData.name}`;
+
+                if (!localStorage.getItem('lastLogin') || localStorage.getItem('lastLogin') !== userData.name) {
+                    localStorage.setItem('balance', 0);  // reset balance
+                    localStorage.setItem('lastLogin', userData.name); // remember this user
+                }
             }
 
             if (!localStorage.getItem('balance')) {
