@@ -71,12 +71,15 @@
         </section>
 
         <script>
-            
+
             let userData = JSON.parse(localStorage.getItem('userData'));
             if (userData && userData.name) {
                 document.getElementById('displayName').innerText = `Welcome ${userData.name}`;
             }
 
+            if (!localStorage.getItem('balance')) {
+                localStorage.setItem('balance', 0);
+            }
             let balance = parseFloat(localStorage.getItem('balance')) || 0;
 
             document.getElementById('balanceDisplay').innerText = `Balance: ₹${balance}`;
@@ -150,7 +153,7 @@
                 }
             }
 
-            
+
             function addTransactionToTable(transaction) {
                 const table = document.querySelector('table');
                 let tbody = table.querySelector('tbody');
