@@ -71,23 +71,30 @@
         </section>
 
         <script>
+            
+            let userData = JSON.parse(sessionStorage.getItem('userData'));
+            let balance = parseFloat(sessionStorage.getItem('balance')) || 0;
 
-            let userData = JSON.parse(localStorage.getItem('userData'));
             if (userData && userData.name) {
                 document.getElementById('displayName').innerText = `Welcome ${userData.name}`;
 
-                if (!localStorage.getItem('lastLogin') || localStorage.getItem('lastLogin') !== userData.name) {
-                    localStorage.setItem('balance', 0);  // reset balance
-                    localStorage.setItem('lastLogin', userData.name); // remember this user
+                
+                if (sessionStorage.getItem('currentUser') !== userData.name) {
+                    balance = 0;
+                    sessionStorage.setItem('balance', balance);
+                    sessionStorage.setItem('currentUser', userData.name);
+                    sessionStorage.removeItem('lastTransaction');
                 }
             }
 
-            if (!localStorage.getItem('balance')) {
-                localStorage.setItem('balance', 0);
-            }
-            let balance = parseFloat(localStorage.getItem('balance')) || 0;
+            
+            document.getElementById('balanceDisplay').innerText = `Balance: ₹${balance.toFixed(2)}`;
 
-            document.getElementById('balanceDisplay').innerText = `Balance: ₹${balance}`;
+            
+            let lastTransaction = JSON.parse(sessionStorage.getItem('lastTransaction'));
+            if (lastTransaction) {
+                addTransactionToTable(lastTransaction);
+            }
 
             function deposit() {
                 const amount = parseFloat(document.getElementById('depAmount').value);
@@ -95,29 +102,28 @@
 
                 if (amount <= 0) {
                     alert("Please enter a valid amount");
+                    return;
                 }
-                else {
-                    let registerData = JSON.parse(localStorage.getItem('userData'));
-                    if (registerData.password == password) {
-                        balance += amount;
-                        localStorage.setItem('balance', balance);
 
-                        const depositAmount = {
-                            date: new Date().toLocaleString(),
-                            type: 'Deposit',
-                            amount: amount,
-                            balance: balance
-                        };
-                        localStorage.setItem('lastTransaction', JSON.stringify(depositAmount));
+                if (userData.password === password) {
+                    balance += amount;
+                    sessionStorage.setItem('balance', balance);
 
-                        document.getElementById('balanceDisplay').innerText = `Balance: ₹${balance}`;
-                        document.getElementById('depAmount').value = '';
-                        document.getElementById('depPass').value = '';
-                        addTransactionToTable(depositAmount);
-                    }
-                    else {
-                        alert("Incorrect password!");
-                    }
+                    const depositAmount = {
+                        date: new Date().toLocaleString(),
+                        type: 'Deposit',
+                        amount: amount,
+                        balance: balance
+                    };
+
+                    sessionStorage.setItem('lastTransaction', JSON.stringify(depositAmount));
+                    addTransactionToTable(depositAmount);
+
+                    document.getElementById('balanceDisplay').innerText = `Balance: ₹${balance.toFixed(2)}`;
+                    document.getElementById('depAmount').value = '';
+                    document.getElementById('depPass').value = '';
+                } else {
+                    alert("Incorrect password!");
                 }
             }
 
@@ -127,37 +133,36 @@
 
                 if (amount <= 0) {
                     alert("Please enter a valid amount");
+                    return;
                 }
-                else {
-                    let registerData = JSON.parse(localStorage.getItem('userData'));
-                    if (registerData.password == password) {
-                        if (amount > balance) {
-                            alert("Insufficient balance!");
-                        } else {
-                            balance -= amount;
-                            localStorage.setItem('balance', balance);
 
-                            const withdrawAmount = {
-                                date: new Date().toLocaleString(),
-                                type: 'Withdraw',
-                                amount: amount,
-                                balance: balance
-                            };
-                            localStorage.setItem('lastTransaction', JSON.stringify(withdrawAmount));
-
-                            document.getElementById('balanceDisplay').innerText = `Balance: ₹${balance}`;
-                            document.getElementById('withdrawDisplay').innerText = `Withdrawn: ₹${amount}`;
-
-                            document.getElementById('withAmount').value = '';
-                            document.getElementById('withPass').value = '';
-                            addTransactionToTable(withdrawAmount);
-                        }
-                    } else {
-                        alert("Incorrect password!");
+                if (userData.password === password) {
+                    if (amount > balance) {
+                        alert("Insufficient balance!");
+                        return;
                     }
+
+                    balance -= amount;
+                    sessionStorage.setItem('balance', balance);
+
+                    const withdrawAmount = {
+                        date: new Date().toLocaleString(),
+                        type: 'Withdraw',
+                        amount: amount,
+                        balance: balance
+                    };
+
+                    sessionStorage.setItem('lastTransaction', JSON.stringify(withdrawAmount));
+                    addTransactionToTable(withdrawAmount);
+
+                    document.getElementById('balanceDisplay').innerText = `Balance: ₹${balance.toFixed(2)}`;
+                    document.getElementById('withdrawDisplay').innerText = `Withdrawn: ₹${amount.toFixed(2)}`;
+                    document.getElementById('withAmount').value = '';
+                    document.getElementById('withPass').value = '';
+                } else {
+                    alert("Incorrect password!");
                 }
             }
-
 
             function addTransactionToTable(transaction) {
                 const table = document.querySelector('table');
@@ -170,15 +175,15 @@
                 const row = document.createElement('tr');
                 row.className = "border-t";
                 row.innerHTML = `
-                    <td class="px-4 py-2">${transaction.date}</td>
-                    <td class="px-4 py-2">${transaction.type}</td>
-                    <td class="px-4 py-2">₹${transaction.amount}</td>
-                    <td class="px-4 py-2">₹${transaction.balance}</td>
-                `;
+            <td class="px-4 py-2">${transaction.date}</td>
+            <td class="px-4 py-2">${transaction.type}</td>
+            <td class="px-4 py-2">₹${transaction.amount.toFixed(2)}</td>
+            <td class="px-4 py-2">₹${transaction.balance.toFixed(2)}</td>
+        `;
                 tbody.appendChild(row);
             }
-
         </script>
+
 
 
     </div>

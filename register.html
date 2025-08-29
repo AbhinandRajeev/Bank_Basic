@@ -59,7 +59,7 @@
                 password: userPassword.value
             }
 
-            localStorage.setItem('userData', JSON.stringify(userDetails))
+            sessionStorage.setItem('userData', JSON.stringify(userDetails))
 
             if (userDetails.name == "" || userDetails.accNo == "" || userDetails.password == "") {
                 alert("Please fill the form")

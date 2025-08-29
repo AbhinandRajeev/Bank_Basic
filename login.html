@@ -57,7 +57,7 @@
         alert("Please fill the form")
       }
       else {
-        let registerData = JSON.parse(localStorage.getItem('userData'))
+        let registerData = JSON.parse(sessionStorage.getItem('userData'))
         console.log(registerData)
 
         if (registerData.accNo == acno) {
