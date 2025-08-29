@@ -77,7 +77,8 @@
                 document.getElementById('displayName').innerText = `Welcome ${userData.name}`;
             }
 
-            let balance = parseFloat(localStorage.getItem('balance'))
+            let balance = parseFloat(localStorage.getItem('balance')) || 0;
+
             document.getElementById('balanceDisplay').innerText = `Balance: ₹${balance}`;
 
             function deposit() {
