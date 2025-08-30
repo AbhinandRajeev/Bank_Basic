@@ -48,36 +48,38 @@
   </div>
 
   <script>
-    function login() {
-      event.preventDefault();
-      let acno = accNumber.value
-      let password = userPassword.value
+  function login() {
+    event.preventDefault();
+    let acno = accNumber.value
+    let password = userPassword.value
 
-      if (acno == "" || password == "") {
-        alert("Please fill the form")
+    if (acno == "" || password == "") {
+      alert("Please fill the form")
+    }
+    else {
+      let registerData = JSON.parse(sessionStorage.getItem('userData'))
+      console.log(registerData)
+
+      if (registerData == null) {
+        alert("No user registered yet. Please register first")
+        window.location.href = "register.html"
+      }
+      else if (registerData.accNo == acno) {
+        if (registerData.password == password) {
+          alert("Log in successfull")
+          window.location.href = 'transaction.html'
+        }
+        else {
+          alert("Incorrect password")
+        }
       }
       else {
-        let registerData = JSON.parse(sessionStorage.getItem('userData'))
-        console.log(registerData)
-
-        if (registerData.accNo == acno) {
-
-          if (registerData.password == password) {
-            alert("Log in successfull")
-            window.location.href = 'transaction.html'
-          }
-          else {
-            alert("Incorrect password")
-          }
-
-        }
-
-        else {
-          alert("Invalid Account Number")
-        }
+        alert("Invalid Account Number")
       }
     }
-  </script>
+  }
+</script>
+
 
 </body>
 
